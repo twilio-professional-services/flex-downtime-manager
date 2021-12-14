@@ -1,0 +1,42 @@
+{
+  "name": "downtime-manager",
+  "version": "6.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "flex-plugin pre-script-check",
+    "test": "jest",
+    "lint": "eslint --ext js src/",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "dependencies": {
+    "@twilio-paste/core": "^10.18.0",
+    "@twilio-paste/icons": "^5.9.0",
+    "enzyme": "^3.11.0",
+    "flex-plugin": "^4.2.2",
+    "flex-plugin-scripts": "4.2.2",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.6",
+    "redux": "^3.7.2",
+    "twilio": "^3.71.3",
+    "twilio-sync": "^3.0.6",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@twilio/flex-ui": "^1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.5",
+    "enzyme-to-json": "^3.6.2",
+    "eslint": "^7.32.0",
+    "eslint-config-twilio": "^1.35.1",
+    "jest": "^27.4.3",
+    "react-test-renderer": "^17.0.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "twilio"
+    ]
+  }
+}

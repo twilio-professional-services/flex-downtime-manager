@@ -1,0 +1,23 @@
+{
+  "name": "downtime-manager-service",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "twilio-run",
+    "deploy": "twilio-run deploy"
+  },
+  "dependencies": {
+    "@twilio/runtime-handler": "1.2.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
+    "twilio": "^3.56",
+    "twilio-flex-token-validator": "^1.5.6"
+  },
+  "devDependencies": {
+    "twilio-run": "^3.4.0"
+  },
+  "engines": {
+    "node": "12"
+  }
+}

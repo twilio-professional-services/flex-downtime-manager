@@ -1,0 +1,53 @@
+.data-grid-clone{
+    box-sizing: border-box;
+    border-collapse: collapse;
+    border-color: rgb(225, 227, 234);
+    border-spacing: 0px;
+    border-style: solid;
+    border-width: 1px;
+    table-layout: auto;
+    width: 100%;
+}
+
+.data-grid-clone thead{
+    box-sizing: border-box;
+    background-color: rgb(244, 244, 246);
+    border-bottom: 2px solid rgb(225, 227, 234);
+}
+
+.data-grid-clone thead th{
+    box-sizing: border-box;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    position: relative;
+    text-align: left;
+    vertical-align: inherit;
+}
+
+.data-grid-clone tbody tr {
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: rgb(225, 227, 234);
+    border-width: 0px 0px 1px;
+}
+
+.data-grid-clone tbody tr:last-of-type {
+    border-width: 0px;
+}
+
+.data-grid-clone tbody tr:nth-of-type(2n) {
+    background-color: rgb(244, 244, 246);
+}
+
+.data-grid-clone tbody tr td{
+    box-sizing: border-box;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0.75rem 1rem;
+    position: relative;
+    text-align: left;
+    vertical-align: inherit;
+    overflow-wrap: break-word;
+}
