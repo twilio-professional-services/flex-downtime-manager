@@ -7,6 +7,7 @@ It aims to achieve this by intercepting all inbound requests in Twilio Studio Fl
 The code covers the following key elements of the solution:  
 1) The Flex Plugin that adds a configuration screen for Administrator users
 2) The Serverless function that is used to intercept the requests in the Studio Flow
+3) The Serverless functions to disable concurrent writes to the configuration
 
 # Flex Downtime Manager Plugin
 
@@ -59,13 +60,6 @@ This section provides visual examples of how to configure each above item:
 
 ### 1. Deploy the serverless function to your environment
 
-This function acts as a middleware and will return a json response as below:
-```
-{
-    "allowThrough":"yes", //or "no"
-    "offlineMessage":""
-}
-``` 
 
 1.1 copy `./serverless/.env.sample` to `./serverless/.env` and populate the appropriate environment variables.
 
@@ -74,6 +68,8 @@ ACCOUNT_SID=
 AUTH_TOKEN=
 TEAM_SCHEDULE_DOC_NAME= (Note: This will be unique name for the twilio sync doc )
 SYNC_SERVICE_SID=
+TEAM_SCHEDULE_MUTEX_SYNC_UNIQUE_NAME=(Note: This will be unique name for the twilio sync doc acting as write mutex )
+TEAM_SCHEDULE_MUTEX_EXPIRY_MINUTES=10
 ```
 
 1.2 cd into ./serverless/ then run 
@@ -124,6 +120,16 @@ twilio flex:plugins:start
 ```bash
 twilio flex:plugins:deploy --major --changelog "Notes for this version" --description "Manage Downtime for contact center"
 ```
+
+## Response from the interceptor function 
+
+```
+{
+    "allowThrough":"yes", //or "no"
+    "offlineMessage":""
+}
+``` 
+
 
 ## Sample Sync Document for Downtime Configuration  
   
