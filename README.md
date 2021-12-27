@@ -152,43 +152,60 @@ twilio flex:plugins:deploy --major --changelog "Notes for this version" --descri
       "emergencyShutdownMessage":""
    },
    "regularHours":{
-      "weeklyTimings":{
-         "Monday":{
-            "begin":"10:00",
-            "end":"19:00",
-            "isActive":true
-         },
-         "Tuesday":{
-            "begin":"09:00",
-            "end":"18:00",
-            "isActive":true
-         },
-         "Friday":{
-            "begin":"09:00",
-            "end":"18:00",
-            "isActive":true
-         },
-         "Wednesday":{
-            "begin":"09:00",
-            "end":"18:00",
-            "isActive":true
-         },
-         "Thursday":{
-            "begin":"09:00",
-            "end":"18:00",
-            "isActive":true
-         },
-         "Sunday":{
-            "begin":null,
-            "end":null,
-            "isActive":false
-         },
-         "Saturday":{
-            "begin":null,
-            "end":null,
-            "isActive":false
-         }
-      },
+      "weeklyTimings": {
+      "Monday": [
+        {
+          "begin": "09:00",
+          "end": "13:00"
+        },
+        {
+          "begin": "14:00",
+          "end": "19:00"
+        }
+      ],
+      "Tuesday": [
+        {
+          "begin": "09:00",
+          "end": "13:00"
+        },
+        {
+          "begin": "14:00",
+          "end": "19:00"
+        }
+      ],
+      "Friday": [
+        {
+          "begin": "09:00",
+          "end": "13:00"
+        },
+        {
+          "begin": "14:00",
+          "end": "19:00"
+        }
+      ],
+      "Wednesday": [
+        {
+          "begin": "09:00",
+          "end": "13:00"
+        },
+        {
+          "begin": "14:00",
+          "end": "19:00"
+        }
+      ],
+      "Thursday": [
+        {
+          "begin": "09:00",
+          "end": "13:00"
+        },
+        {
+          "begin": "14:00",
+          "end": "19:00"
+        }
+      ],
+      "Sunday": [],
+      "Saturday": []
+    },
       "offlineMessage":"We operate only from 10am to 7pm from Monday to Friday"
    },
    "holidays":{
