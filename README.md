@@ -153,59 +153,59 @@ twilio flex:plugins:deploy --major --changelog "Notes for this version" --descri
    },
    "regularHours":{
       "weeklyTimings": {
-      "Monday": [
-        {
-          "begin": "09:00",
-          "end": "13:00"
-        },
-        {
-          "begin": "14:00",
-          "end": "19:00"
-        }
-      ],
-      "Tuesday": [
-        {
-          "begin": "09:00",
-          "end": "13:00"
-        },
-        {
-          "begin": "14:00",
-          "end": "19:00"
-        }
-      ],
-      "Friday": [
-        {
-          "begin": "09:00",
-          "end": "13:00"
-        },
-        {
-          "begin": "14:00",
-          "end": "19:00"
-        }
-      ],
-      "Wednesday": [
-        {
-          "begin": "09:00",
-          "end": "13:00"
-        },
-        {
-          "begin": "14:00",
-          "end": "19:00"
-        }
-      ],
-      "Thursday": [
-        {
-          "begin": "09:00",
-          "end": "13:00"
-        },
-        {
-          "begin": "14:00",
-          "end": "19:00"
-        }
-      ],
-      "Sunday": [],
-      "Saturday": []
-    },
+         "Monday": [
+         {
+            "begin": "09:00",
+            "end": "13:00"
+         },
+         {
+            "begin": "14:00",
+            "end": "19:00"
+         }
+         ],
+         "Tuesday": [
+         {
+            "begin": "09:00",
+            "end": "13:00"
+         },
+         {
+            "begin": "14:00",
+            "end": "19:00"
+         }
+         ],
+         "Friday": [
+         {
+            "begin": "09:00",
+            "end": "13:00"
+         },
+         {
+            "begin": "14:00",
+            "end": "19:00"
+         }
+         ],
+         "Wednesday": [
+         {
+            "begin": "09:00",
+            "end": "13:00"
+         },
+         {
+            "begin": "14:00",
+            "end": "19:00"
+         }
+         ],
+         "Thursday": [
+         {
+            "begin": "09:00",
+            "end": "13:00"
+         },
+         {
+            "begin": "14:00",
+            "end": "19:00"
+         }
+         ],
+         "Sunday": [],
+         "Saturday": []
+      },
       "offlineMessage":"We operate only from 10am to 7pm from Monday to Friday"
    },
    "holidays":{
@@ -216,6 +216,16 @@ twilio flex:plugins:deploy --major --changelog "Notes for this version" --descri
    }
 }
 ```
+
+## Compatibility
+
+The plugin uses input components from Twilio Paste Library which is compatible with Flex 2.0 and above.  
+For previous versions of Flex, please replace the paste components with compatible material ui components.
+
+References:
+* Material UI components: https://v4.mui.com/ 
+* Material Date/Time pickers: https://github.com/mui-org/material-ui-pickers 
+
 
 ## Setup
 
