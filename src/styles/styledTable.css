@@ -51,3 +51,7 @@
     vertical-align: inherit;
     overflow-wrap: break-word;
 }
+
+.hide-child-combo-label  label[data-paste-element=LABEL]{
+    display: none;
+}

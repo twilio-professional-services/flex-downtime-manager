@@ -34,7 +34,6 @@ export function DowntimeManagerViewComponent(props) {
     const exisitingData = await readDocumentData(syncDocUniqueName);
     setTeamScheduleConfig(exisitingData || {});
     const hasCreatedMutex = await hasCreatedDowntimeConfigMutex();
-    console.error(hasCreatedMutex,"--hasCreatedMutex");
     if("200"===hasCreatedMutex.statusCode && true == hasCreatedMutex.hasExistingMutex){
       setIsReadOnly(false);
     }
@@ -166,7 +165,7 @@ export function DowntimeManagerViewComponent(props) {
 
         <Tabs ß>
           <TabList aria-label="My tabs">
-            <Tab>Weekly Timings</Tab>
+            <Tab>Hours of Operation</Tab>
             <Tab>Emergency Downtime</Tab>
 
             <Tab>Holidays</Tab>
@@ -213,7 +212,7 @@ export function DowntimeManagerViewComponent(props) {
         </Tabs>
       </Box>
      
-      <Modal isOpen={showInProgress} onDismiss={()=>{}} size="default" >
+      <Modal isOpen={showInProgress} onDismiss={()=>{}} size="default" ariaLabelledby="loader-modal" >
        
        <ModalBody>
         

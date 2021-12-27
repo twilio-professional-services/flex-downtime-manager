@@ -2,10 +2,28 @@ import moment from 'moment-timezone';
 import { useState, useEffect } from 'react';
 import { Combobox } from '@twilio-paste/core/combobox';
 import {Text} from '@twilio-paste/core/text'
-const TIMEZONE_LIST = moment.tz.names();
+
+import {fetchTimezoneList} from '../../helpers'
+
+
+
 export function GeneralConfigComponent({ value, addToStagedChanges, isReadOnly }) {
+
+  
+  const [timezoneDictionary, setTimezoneDictionary] = React.useState([]);
   const [timezone, setTimezone] = useState(moment.tz.guess());
-  const [timezoneOptions, setTimezoneOptions] = React.useState(TIMEZONE_LIST);
+  const [timezoneFilteredOptions, setTimezoneFilteredOptions] = React.useState([]);
+  
+  const loadTimezoneDictionary= async ()=>{
+    const allTimezones = await fetchTimezoneList();
+    setTimezoneDictionary(allTimezones);
+    setTimezoneFilteredOptions(allTimezones);
+  }
+  
+  useEffect(() => {
+    loadTimezoneDictionary();
+  }, []);
+ 
   useEffect(() => {
     setTimezone((og) => value?.timezone || og);
   }, [value]);
@@ -16,10 +34,8 @@ export function GeneralConfigComponent({ value, addToStagedChanges, isReadOnly }
     }
   }, [timezone]);
 
-  const handleChangeTimezone = (e) => {
-    setTimezone(e.target.value);
-  };
-
+  useEffect(() => {
+  }, [timezoneDictionary]);
 
  
 
@@ -28,7 +44,7 @@ export function GeneralConfigComponent({ value, addToStagedChanges, isReadOnly }
     <Combobox
       autocomplete
       disabled={isReadOnly}
-      items={timezoneOptions}
+      items={timezoneFilteredOptions}
       labelText="Select a Timezone"
       selectedItem={timezone}
       onSelectedItemChange={(changes) => {
@@ -36,13 +52,13 @@ export function GeneralConfigComponent({ value, addToStagedChanges, isReadOnly }
       }}
       onInputValueChange={({ inputValue }) => {
         if (inputValue === undefined) {
-          setTimezoneOptions(TIMEZONE_LIST);
+          setTimezoneFilteredOptions(timezoneDictionary);
           return;
         }
 
-        setTimezoneOptions(
-          TIMEZONE_LIST.filter((item) => {
-            return item.toLowerCase().startsWith(inputValue.toLowerCase());
+        setTimezoneFilteredOptions(
+          timezoneDictionary.filter((item) => {
+            return item.toLowerCase().indexOf(inputValue.toLowerCase())>=0;
           }),
         );
       }}

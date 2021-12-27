@@ -42,6 +42,21 @@ const checkIfTimeInRange=(currentTime,begin,end)=>{
       return false;
 }
 
+/*
+check if supplied moment object lies within list of ranges of supplied time stamps in format(HH:mm)
+*/
+
+const checkIfTimeInListOfRanges=(currentTime,list)=>{
+  if(currentTime==null || list==null || !Array.isArray(list)){
+   return false;
+  }
+  let isInRangeList = false;
+  for(listItem of list){
+    isInRangeList = isInRangeList ||  checkIfTimeInRange(currentTime,listItem.begin,listItem.end)
+  }
+  return isInRangeList;
+}
+
 
 const buildAllowThroughResponse = ()=>{
   return {"allowThrough":"yes"};
@@ -93,7 +108,7 @@ if(partialDayLookup!=null && !checkIfTimeInRange(ccTime,partialDayLookup["begin"
 
 // check regular hours for contact center
 const regularDayLookup = teamSchedule["regularHours"]["weeklyTimings"][ccDayOfWeek];
-if(regularDayLookup!=null && !checkIfTimeInRange(ccTime,regularDayLookup["begin"],regularDayLookup["end"])){
+if(regularDayLookup!=null && !checkIfTimeInListOfRanges(ccTime,regularDayLookup)){
        const outsideRegularHoursOfflineMessage =  teamSchedule["regularHours"]["offlineMessage"];
        return callback(null,buildBlockResponse(outsideRegularHoursOfflineMessage))
 }

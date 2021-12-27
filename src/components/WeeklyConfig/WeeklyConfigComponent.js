@@ -1,180 +1,203 @@
 import moment from 'moment-timezone';
 import { useState, useEffect } from 'react';
-import { useUID } from '@twilio-paste/core/uid-library';
-import {
-  DataGrid,
-  DataGridHead,
-  DataGridRow,
-  DataGridHeader,
-  DataGridBody,
-  DataGridCell,
-} from '@twilio-paste/core/data-grid';
+import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@twilio-paste/core/button';
 import { TimePicker, formatReturnTime } from '@twilio-paste/core/time-picker';
 import { Label } from '@twilio-paste/core/label';
 import { Input } from '@twilio-paste/core/input';
+import { Combobox } from '@twilio-paste/core/combobox';
 import { Stack } from '@twilio-paste/core/stack';
 import { TextArea } from '@twilio-paste/core/textarea';
+import { PlusIcon } from '@twilio-paste/icons/esm/PlusIcon';
 import { Box } from '@twilio-paste/core/box';
 
+import '../../styles/styledTable.css';
 const DAYS_OF_WEEK = moment.weekdays();
-const TABLE_HEADERS = ['Day', 'Start Time', 'End Time'];
+
 
 export function WeeklyConfigComponent({ value, addToStagedChanges,isReadOnly }) {
-  const [weekConfig, setWeekConfig] = useState(null);
+
+  const [hoopRows, setHoopRows] = useState([]);
   const [weeklyOfflineMessage, setWeeklyOfflineMessage] = useState('');
 
-  const convertWeeklyTimingsToWeekConfig = ({ weeklyTimings }) => {
-    const tempConfig = {};
+  const convertWeeklyTimingsToHoopList = (configObj)=>{
 
-    DAYS_OF_WEEK.forEach((x) => {
-      const existing = weeklyTimings[x];
-      tempConfig[x] = existing !=null && existing.begin != null && existing.end != null
-          ? { ...existing }
-          : {
-              begin: '',
-              end: '',
-            };
-    });
-
-    return tempConfig;
-  };
-
-  const convertWeekConfigToWeeklyTimings = (weekConfigObj) => {
-    if (weekConfigObj == null) {
-      return {};
+    if(configObj==null || configObj.weeklyTimings == null){
+      return [];
     }
 
-    const tempWeeklyTimings = {};
-
+    const tempHoopRows = [];
+   
     DAYS_OF_WEEK.forEach((x) => {
-      const existing = weekConfigObj[x];
-      tempWeeklyTimings[x] =
-        existing != null && existing.begin != '' && existing.end != ''
-          ? {
-              isActive: true,
-              begin: existing.begin,
-              end: existing.end,
-            }
-          : {
-              isActive: false,
-              begin: null,
-              end: null,
-            };
+      let existing = configObj.weeklyTimings[x];
+      if(existing!=null){
+        if(!Array.isArray(existing)){
+          existing = [existing];
+        }
+
+        existing.forEach(row=>{
+          tempHoopRows.push({ dayOfWeek:x, begin:row.begin,end:row.end, key: uuidv4() })
+        })
+
+
+
+      }
     });
 
+    tempHoopRows.sort((a, b) => {
+      if(a.dayOfWeek==b.dayOfWeek){
+        var beginningTimeA = moment(a.begin, 'kk:mm');
+        var beginningTimeB = moment(b.begin, 'kk:mm');
+        return beginningTimeA.toDate() - beginningTimeB.toDate()
+      }
+      return DAYS_OF_WEEK.indexOf(a.dayOfWeek)-DAYS_OF_WEEK.indexOf(b.dayOfWeek)
+    }
+    );
+
+    return tempHoopRows;
+
+
+  }
+
+
+  const convertHoopListToWeeklyTimings = (rows)=>{
+    const tempWeeklyTimings = {};
+    DAYS_OF_WEEK.forEach((d) => {
+      tempWeeklyTimings[d] = rows.filter(x=>x.dayOfWeek===d && x.begin!=null && x.end!=null)
+                                 .map(x=>{return {'begin':x.begin,'end':x.end}});
+    })
     return tempWeeklyTimings;
-  };
+  }
 
   useEffect(() => {
-    setWeekConfig(convertWeeklyTimingsToWeekConfig(value || { weeklyTimings: {} }));
-    setWeeklyOfflineMessage(og=>value?.["offlineMessage"]||og)
+    setHoopRows(convertWeeklyTimingsToHoopList(value));
+    setWeeklyOfflineMessage(og=>value?.["offlineMessage"]||og);
   }, [value]);
+
 
   useEffect(() => {
     if (addToStagedChanges) {
       addToStagedChanges({
         offlineMessage: weeklyOfflineMessage,
-        weeklyTimings: convertWeekConfigToWeeklyTimings(weekConfig),
-      });
+        weeklyTimings: convertHoopListToWeeklyTimings(hoopRows)
+      }
+        );
     }
-  }, [weekConfig, weeklyOfflineMessage]);
+  }, [hoopRows]);
 
-  const handleTimeChange = (day, fieldName) => {
-    return (evt) => {
-      const formattedValue = evt.target.value == '' ? '' : formatReturnTime(evt.target.value, 'HH:mm');
-
-      setWeekConfig((orig) => {
-        return {
-          ...orig,
-          [day]: {
-            ...orig[day],
-            [fieldName]: formattedValue,
-          },
-        };
-      });
-    };
-  };
-
-  const handleCloneToWeek = (day) => {
-    return (evt) => {
-      const selectedDayConfig = weekConfig[day];
-      const tempConfig = {};
-      DAYS_OF_WEEK.forEach((x) => {
-        tempConfig[x] = selectedDayConfig;
-      });
-      setWeekConfig(tempConfig);
-    };
-  };
-
-  const handleClearDayTimings = (day) => {
-    return (evt) => {
-      setWeekConfig((og) => {
-        return {
-          ...og,
-          [day]: { begin: '', end: '' },
-        };
-      });
-    };
-  };
+  
 
   const handleChangeWeeklyOfflineMessage = (e) => {
     setWeeklyOfflineMessage(e.target.value);
   };
 
-  if (!weekConfig) {
-    return null;
+
+  const handleAddNewHoopRow = () => {
+    setHoopRows((ogList) => {
+      return [...ogList, { dayOfWeek: 'Monday', begin:'',end:'', key: uuidv4() }];
+    });
+  };
+
+  const handleDeleteHoopRow = (key) => {
+    return ()=>{
+      setHoopRows((ogList) => {
+        return ogList.filter(row=>row.key!=key);
+      });
   }
+  };
+
+  const handleUpdateHoopRowDayOfWeek = (key) => {
+    return (e)=>{
+      setHoopRows((ogList) => {
+        return ogList.map((li) => {
+          if (key === li.key) {
+            return { ...li, dayOfWeek: e.selectedItem };
+          }
+          return li;
+        });
+      });
+  }
+  };
+
+  const handleUpdateHoopRowTime = (key, fieldName) => {
+    return (evt) => {
+      const formattedValue = evt.target.value == '' ? '' : formatReturnTime(evt.target.value, 'HH:mm');
+
+      setHoopRows((ogList) => {
+        return ogList.map((li) => {
+          if (key === li.key) {
+            return { ...li, [fieldName]: formattedValue };
+          }
+          return li;
+        });
+      });
+    };
+  };
+
 
   return (
     <Stack orientation="vertical" spacing="space60">
       <Box>
-        <Label>Weekly Timings:</Label>
-        <DataGrid striped aria-label="weekly-timing-config">
-          <DataGridHead>
-            <DataGridRow>
-              <DataGridHeader>{TABLE_HEADERS[0]}</DataGridHeader>
-              <DataGridHeader>{TABLE_HEADERS[1]}</DataGridHeader>
-              <DataGridHeader>{TABLE_HEADERS[2]}</DataGridHeader>
+      <Stack orientation="horizontal" spacing="space60" >
+        <Label>Hours of Operation:</Label>
+        {
+                    !isReadOnly &&
+        <Button variant="secondary" onClick={handleAddNewHoopRow}>
+          {' '}
+          <PlusIcon decorative={false} title="Add Row" /> Add Row
+        </Button>
+}
+
+      </Stack>
+      <br />
+
+        <table className="data-grid-clone">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Start Time</th>
+              <th>End Time</th>
               {
                     !isReadOnly &&
-                    <DataGridHeader>Actions</DataGridHeader>
-              }
-            </DataGridRow>
-          </DataGridHead>
-          <DataGridBody>
-            {DAYS_OF_WEEK.map((day, dayIndex) => (
-              <DataGridRow key={`row-${dayIndex}`}>
-                <DataGridCell key={`col-day-title`}>{day}</DataGridCell>
-
-                <DataGridCell key={`col-day-begin`}>
-                  <TimePicker value={weekConfig[day].begin} onChange={handleTimeChange(day, 'begin')}  readOnly={isReadOnly} />
-                </DataGridCell>
-
-                <DataGridCell key={`col-end`}>
-                  <TimePicker value={weekConfig[day].end} onChange={handleTimeChange(day, 'end')} readOnly={isReadOnly} />
-                </DataGridCell>
+              <th>Actions</th>
+}
+              </tr>
+              </thead>
+              <tbody>
                 {
+                  hoopRows.map(hoopRow=>(
+                    <tr key={`hoop-edit-row-${hoopRow.key}`}>
+                          <td className="hide-child-combo-label">
+                          <Combobox
+    labelText={""}
+      items={DAYS_OF_WEEK}
+      selectedItem={hoopRow.dayOfWeek}
+      onSelectedItemChange={handleUpdateHoopRowDayOfWeek(hoopRow.key)}
+      disabled={isReadOnly}
+    />
+                          </td>
+                          <td>
+                          <TimePicker value={hoopRow.begin} onChange={handleUpdateHoopRowTime(hoopRow.key,'begin')} readOnly={isReadOnly}  />
+                          </td>
+                          <td>
+                          <TimePicker value={hoopRow.end} onChange={handleUpdateHoopRowTime(hoopRow.key,'end')} readOnly={isReadOnly} />
+                          </td>
+                          {
                     !isReadOnly &&
-                <DataGridCell key={`col-actions`}>
-                 
-                  
-                  <Stack orientation="horizontal" spacing="space60">
-                    <Button variant="link" size="small" onClick={handleCloneToWeek(day)}>
-                      Clone
-                    </Button>
+                          <td>
 
-                    <Button variant="destructive_link" size="small" onClick={handleClearDayTimings(day)}>
-                      Clear
-                    </Button>
-                  </Stack>
-              
-                </DataGridCell>
+                          <Button variant="destructive_link" size="small" onClick={handleDeleteHoopRow(hoopRow.key)} >
+                    Delete
+                  </Button>
+                          </td>
+}
+                      </tr>
+                  ))
                 }
-              </DataGridRow>
-            ))}
-          </DataGridBody>
-        </DataGrid>
+              </tbody>
+            </table>
+
+    
       </Box>
 
       <Box>
@@ -184,7 +207,7 @@ export function WeeklyConfigComponent({ value, addToStagedChanges,isReadOnly }) 
           placeholder="Offline Message"
           value={weeklyOfflineMessage}
           onChange={handleChangeWeeklyOfflineMessage}
-          readOnly={isReadOnly}
+          readOnly={isReadOnly} 
         />
       </Box>
     </Stack>
