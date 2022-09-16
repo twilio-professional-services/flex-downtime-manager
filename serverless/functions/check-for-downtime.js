@@ -101,7 +101,7 @@ if(null!=teamSchedule["holidays"][ccFormattedDay]){
 
 // check if contact center is partially working
 const partialDayLookup = teamSchedule["partialDays"][ccFormattedDay];
-if(partialDayLookup!=null && !checkIfTimeInRange(ccTime,partialDayLookup["begin"],partialDayLookup["end"])){
+if(partialDayLookup!=null && checkIfTimeInRange(ccTime,partialDayLookup["begin"],partialDayLookup["end"])){
   const partialDayOfflineMessage = partialDayLookup["offlineMessage"];
   return callback(null,buildBlockResponse(partialDayOfflineMessage))
 }
