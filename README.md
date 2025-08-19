@@ -1,3 +1,7 @@
+# Notice - Legacy Code
+
+**This plugin is no longer maintained and has been updated as part of the [Flex Plugin Library](https://www.twilio.com/docs/flex/developer/plugins/plugin-library) where it is available as an out-of-box feature. The updated plugin is also available as part of the customizable [Flex Project Template](https://github.com/twilio-professional-services/flex-project-template), where it is an optional feature.**
+
 # Overview
 
 This solution addresses a common need for most contact centers to manage their downtimes.   
